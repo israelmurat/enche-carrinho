@@ -1,13 +1,14 @@
 package com.muratsystems.enchecarrinho.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muratsystems.enchecarrinho.model.domain.Coupon;
 import com.muratsystems.enchecarrinho.model.domain.Product;
 import com.muratsystems.enchecarrinho.model.domain.ShoppingCart;
+import com.muratsystems.enchecarrinho.model.dto.ProductCartDTO;
 import com.muratsystems.enchecarrinho.model.repository.CouponRepository;
 import com.muratsystems.enchecarrinho.model.repository.ProductRepository;
 
@@ -33,7 +35,7 @@ public class ShoppingCartController {
 	private CouponRepository couponRepository;
 
 	@PostMapping(value = "/{idProduct}")
-	public String addToChart(@PathVariable("idProduct") Long idProducut, 
+	public ResponseEntity<List<ProductCartDTO>> addToChart(@PathVariable("idProduct") Long idProducut,
 			@CookieValue("cart") Optional<String> jsonCart, HttpServletResponse response)
 			throws JsonProcessingException {
 
@@ -57,7 +59,7 @@ public class ShoppingCartController {
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 
-		return shoppingCart.toString();
+		return new ResponseEntity<>(shoppingCart.getProductsCart(), HttpStatus.OK);
 
 	}
 

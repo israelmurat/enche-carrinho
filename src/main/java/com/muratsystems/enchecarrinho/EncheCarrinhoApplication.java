@@ -13,10 +13,11 @@ public class EncheCarrinhoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EncheCarrinhoApplication.class, args);
 	}
-	
+
 	@Bean
 	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> cookieProcessorCustomizer() {
-		return (factory) -> factory.addContextCustomizers((context) -> context.setCookieProcessor(new LegacyCookieProcessor()));
+		return (factory) -> factory
+				.addContextCustomizers((context) -> context.setCookieProcessor(new LegacyCookieProcessor()));
 	}
 
 }
