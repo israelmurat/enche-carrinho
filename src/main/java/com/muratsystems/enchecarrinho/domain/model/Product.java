@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.model.domain;
+package com.muratsystems.enchecarrinho.domain.model;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.muratsystems.enchecarrinho.model.dto.ProductDTO;
+import com.muratsystems.enchecarrinho.api.dto.ProductDTO;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

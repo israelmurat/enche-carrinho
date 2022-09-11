@@ -1,8 +1,8 @@
-package com.muratsystems.enchecarrinho.model.dto;
+package com.muratsystems.enchecarrinho.api.dto;
 
 import java.math.BigDecimal;
 
-import com.muratsystems.enchecarrinho.model.domain.Product;
+import com.muratsystems.enchecarrinho.domain.model.Product;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

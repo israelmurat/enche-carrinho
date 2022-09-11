@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.model;
+package com.muratsystems.enchecarrinho.domain.exception;
 
 public class BusinessException extends RuntimeException {
 

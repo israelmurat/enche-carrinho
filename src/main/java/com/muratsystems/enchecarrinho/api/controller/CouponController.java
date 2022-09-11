@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.controller;
+package com.muratsystems.enchecarrinho.api.controller;
 
 import java.util.List;
 
@@ -13,34 +13,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.muratsystems.enchecarrinho.model.dto.ProductDTO;
-import com.muratsystems.enchecarrinho.model.service.ProductService;
+import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
+import com.muratsystems.enchecarrinho.domain.service.CouponService;
 
 @RestController
-@RequestMapping(value = "/products")
-public class ProductController {
+@RequestMapping(value = "/coupons")
+public class CouponController {
 
 	@Autowired
-	private ProductService productService;
+	private CouponService couponService;
 	
 	@GetMapping
-	public List<ProductDTO> getAllProducts() {
+	public List<CouponDTO> getAllCoupons() {
 		return null;
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) 
-	public ProductDTO addProduct(@RequestBody ProductDTO product) {
-		return productService.addProduct(product);
+	public CouponDTO addCoupon(@RequestBody CouponDTO couponDTO) {
+		return couponService.addProduct(couponDTO);
 	}
 	
 	@PutMapping(value = "/{id}/update")
-	public void updateProduct() {
+	public void updateCoupon() {
 		
 	}
 	
 	@DeleteMapping(value = "/{id}/delete")
-	public void deleteProduct() {
+	public void deleteCoupon() {
 		
 	}
 	

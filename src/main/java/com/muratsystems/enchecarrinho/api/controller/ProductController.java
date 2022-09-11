@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.controller;
+package com.muratsystems.enchecarrinho.api.controller;
 
 import java.util.List;
 
@@ -8,38 +8,39 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.muratsystems.enchecarrinho.model.dto.CouponDTO;
-import com.muratsystems.enchecarrinho.model.service.CouponService;
+import com.muratsystems.enchecarrinho.api.dto.ProductDTO;
+import com.muratsystems.enchecarrinho.domain.service.ProductService;
 
 @RestController
-@RequestMapping(value = "/coupons")
-public class CouponController {
+@RequestMapping(value = "/products")
+public class ProductController {
 
 	@Autowired
-	private CouponService couponService;
+	private ProductService productService;
 	
 	@GetMapping
-	public List<CouponDTO> getAllCoupons() {
+	public List<ProductDTO> getAllProducts() {
 		return null;
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) 
-	public void addCoupon() {
-		
+	public ProductDTO addProduct(@RequestBody ProductDTO product) {
+		return productService.addProduct(product);
 	}
 	
 	@PutMapping(value = "/{id}/update")
-	public void updateCoupon() {
+	public void updateProduct() {
 		
 	}
 	
 	@DeleteMapping(value = "/{id}/delete")
-	public void deleteCoupon() {
+	public void deleteProduct() {
 		
 	}
 	

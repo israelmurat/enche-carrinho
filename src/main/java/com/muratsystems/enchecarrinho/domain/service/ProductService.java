@@ -1,14 +1,14 @@
-package com.muratsystems.enchecarrinho.model.service;
+package com.muratsystems.enchecarrinho.domain.service;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.muratsystems.enchecarrinho.model.BusinessException;
-import com.muratsystems.enchecarrinho.model.domain.Product;
-import com.muratsystems.enchecarrinho.model.dto.ProductDTO;
-import com.muratsystems.enchecarrinho.model.repository.ProductRepository;
+import com.muratsystems.enchecarrinho.api.dto.ProductDTO;
+import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
+import com.muratsystems.enchecarrinho.domain.model.Product;
+import com.muratsystems.enchecarrinho.domain.repository.ProductRepository;
 
 @Service
 public class ProductService {

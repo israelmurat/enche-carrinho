@@ -1,9 +1,9 @@
-package com.muratsystems.enchecarrinho.model.domain;
+package com.muratsystems.enchecarrinho.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.muratsystems.enchecarrinho.model.dto.ProductCartDTO;
+import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
 
 import lombok.Getter;
 import lombok.Setter;

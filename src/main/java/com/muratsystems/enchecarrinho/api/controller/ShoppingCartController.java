@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.controller;
+package com.muratsystems.enchecarrinho.api.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.muratsystems.enchecarrinho.model.domain.Coupon;
-import com.muratsystems.enchecarrinho.model.domain.Product;
-import com.muratsystems.enchecarrinho.model.domain.ShoppingCart;
-import com.muratsystems.enchecarrinho.model.dto.ProductCartDTO;
-import com.muratsystems.enchecarrinho.model.repository.CouponRepository;
-import com.muratsystems.enchecarrinho.model.repository.ProductRepository;
+import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
+import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
+import com.muratsystems.enchecarrinho.domain.model.Coupon;
+import com.muratsystems.enchecarrinho.domain.model.Product;
+import com.muratsystems.enchecarrinho.domain.model.ShoppingCart;
+import com.muratsystems.enchecarrinho.domain.repository.CouponRepository;
+import com.muratsystems.enchecarrinho.domain.repository.ProductRepository;
 
 @RestController
 @RequestMapping(value = "/cart")
@@ -35,8 +36,9 @@ public class ShoppingCartController {
 	private CouponRepository couponRepository;
 
 	@PostMapping(value = "/{idProduct}")
-	public ResponseEntity<List<ProductCartDTO>> addToChart(@PathVariable("idProduct") Long idProducut,
-			@CookieValue("cart") Optional<String> jsonCart, HttpServletResponse response)
+	public ResponseEntity<List<ProductCartDTO>> addToChart(@CookieValue("cart") Optional<String> jsonCart, 
+			@CookieValue("coupon") Optional<String> jsonCoupon,
+			HttpServletResponse response, @PathVariable("idProduct") Long idProducut)
 			throws JsonProcessingException {
 
 		/**
@@ -61,6 +63,25 @@ public class ShoppingCartController {
 
 		return new ResponseEntity<>(shoppingCart.getProductsCart(), HttpStatus.OK);
 
+	}
+	
+	@PostMapping(value = "/apply-coupon/{codeCoupon}")
+	public void applyCoupon(@CookieValue("coupon") Optional<String> jsonCoupon,
+			HttpServletResponse response, @PathVariable("codeCoupon") String codeCoupon)
+			throws JsonProcessingException {
+		
+		CouponDTO couponDTO = jsonCoupon.map(json -> {
+			try {
+				return new ObjectMapper().readValue(json, CouponDTO.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException();
+			}
+		}).orElse(new CouponDTO());
+		
+		Cookie cookie = new Cookie("coupon", new ObjectMapper().writeValueAsString(couponDTO));
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
+		
 	}
 
 }
