@@ -17,11 +17,19 @@ public class ProductService {
 	private ProductRepository productRepository;
 	
 	public ProductDTO addProduct(ProductDTO productDTO) {
-		Optional<Product> optProduct =  productRepository.findByDescription(productDTO.getDescription());
+		Optional<Product> optProduct = productRepository.findByDescription(productDTO.getDescription());
 		if (optProduct.isPresent()) {
 			throw new BusinessException("Já existe um produto cadastrado com esta descrição!");
 		}
 		return new ProductDTO(productRepository.save(new Product(productDTO)));
+	}
+	
+	public ProductDTO findById(Long idProduct) {
+		Optional<Product> optProduct = productRepository.findById(idProduct);
+		if (optProduct.isPresent()) {
+			return new ProductDTO(optProduct.get());
+		}
+		throw new BusinessException("Produto não encontrado!");
 	}
 	
 }

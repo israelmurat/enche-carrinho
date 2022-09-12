@@ -19,27 +19,24 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
 import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
-import com.muratsystems.enchecarrinho.domain.model.Coupon;
-import com.muratsystems.enchecarrinho.domain.model.Product;
-import com.muratsystems.enchecarrinho.domain.model.ShoppingCart;
-import com.muratsystems.enchecarrinho.domain.repository.CouponRepository;
-import com.muratsystems.enchecarrinho.domain.repository.ProductRepository;
+import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
+import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
+import com.muratsystems.enchecarrinho.domain.service.CouponService;
+import com.muratsystems.enchecarrinho.domain.service.ProductService;
 
 @RestController
 @RequestMapping(value = "/cart")
 public class ShoppingCartController {
 
 	@Autowired
-	private ProductRepository productRepository;
+	private ProductService productService;
 
 	@Autowired
-	private CouponRepository couponRepository;
+	private CouponService couponService;
 
 	@PostMapping(value = "/{idProduct}")
-	public ResponseEntity<List<ProductCartDTO>> addToChart(@CookieValue("cart") Optional<String> jsonCart, 
-			@CookieValue("coupon") Optional<String> jsonCoupon,
-			HttpServletResponse response, @PathVariable("idProduct") Long idProducut)
-			throws JsonProcessingException {
+	public ResponseEntity<List<ProductCartDTO>> addToChart(@CookieValue("cart") Optional<String> jsonCart,
+			HttpServletResponse response, @PathVariable("idProduct") Long idProducut) throws JsonProcessingException {
 
 		/**
 		 * Receber carrinho pelo cookie (JSON) Se não tiver cookie do carrinho, cria
@@ -47,16 +44,9 @@ public class ShoppingCartController {
 		 */
 
 		// ObjectMapper é classe do Jackson que desserializa o Json.
-		ShoppingCart shoppingCart = jsonCart.map(json -> {
-			try {
-				return new ObjectMapper().readValue(json, ShoppingCart.class);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException();
-			}
-		}).orElse(new ShoppingCart());
+		ShoppingCartDTO shoppingCart = getShoppingCartByCookie(jsonCart);
+		shoppingCart.addProducts(productService.findById(idProducut));
 
-//		shoppingCart.add(productRepository.findById(idProducut).get(), couponRepository.findById(idCoupon).get());
-		shoppingCart.add(new Product(), new Coupon());
 		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(shoppingCart));
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
@@ -64,24 +54,52 @@ public class ShoppingCartController {
 		return new ResponseEntity<>(shoppingCart.getProductsCart(), HttpStatus.OK);
 
 	}
-	
-	@PostMapping(value = "/apply-coupon/{codeCoupon}")
-	public void applyCoupon(@CookieValue("coupon") Optional<String> jsonCoupon,
-			HttpServletResponse response, @PathVariable("codeCoupon") String codeCoupon)
-			throws JsonProcessingException {
-		
-		CouponDTO couponDTO = jsonCoupon.map(json -> {
+
+	private ShoppingCartDTO getShoppingCartByCookie(Optional<String> jsonCart) {
+		ShoppingCartDTO shoppingCart = jsonCart.map(json -> {
 			try {
-				return new ObjectMapper().readValue(json, CouponDTO.class);
+				return new ObjectMapper().readValue(json, ShoppingCartDTO.class);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException();
 			}
-		}).orElse(new CouponDTO());
-		
-		Cookie cookie = new Cookie("coupon", new ObjectMapper().writeValueAsString(couponDTO));
+		}).orElse(new ShoppingCartDTO());
+		return shoppingCart;
+	}
+
+	@PostMapping(value = "/apply-coupon/{codeCoupon}")
+	public ResponseEntity<List<ProductCartDTO>> applyCoupon(@CookieValue("cart") Optional<String> jsonCart,
+			HttpServletResponse response, @PathVariable("codeCoupon") String codeCoupon)
+			throws JsonProcessingException {
+
+		Optional<ShoppingCartDTO> optCart = Optional.ofNullable(getShoppingCartByCookie(jsonCart));
+		if (!optCart.isPresent() || optCart.get().getProductsCart().isEmpty()) {
+			throw new BusinessException("Não é possível aplicar o cupom com o carrinho vazio!");
+		}
+
+		Optional<CouponDTO> optNewCoupon = couponService.findByCode(codeCoupon);
+//		if (!optNewCoupon.isPresent() || optNewCoupon.get().getExpiration().isBefore(LocalDateTime.now())) {
+		if (!optNewCoupon.isPresent()) {
+			throw new BusinessException("Cupom de desconto não cadastrado ou já está expirado!");
+		}
+
+		Optional<CouponDTO> optCouponCart = Optional.ofNullable(optCart.get().getCoupon());
+
+		if (optCouponCart.isPresent()) {
+			if (optNewCoupon.get().getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) > 0) {
+				// Retirar desconto e reaplicar
+				optCart.get().setCoupon(optNewCoupon.get());
+			}
+		} else {
+			// Aplicar desconto
+			optCart.get().setCoupon(optNewCoupon.get());
+		}
+
+		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(optCart.get()));
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
-		
+
+		return new ResponseEntity<>(optCart.get().getProductsCart(), HttpStatus.OK);
+
 	}
 
 }

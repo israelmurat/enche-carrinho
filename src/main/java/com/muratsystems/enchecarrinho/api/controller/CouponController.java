@@ -31,7 +31,7 @@ public class CouponController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) 
 	public CouponDTO addCoupon(@RequestBody CouponDTO couponDTO) {
-		return couponService.addProduct(couponDTO);
+		return couponService.addCoupon(couponDTO);
 	}
 	
 	@PutMapping(value = "/{id}/update")

@@ -2,23 +2,29 @@ package com.muratsystems.enchecarrinho.api.dto;
 
 import java.math.BigDecimal;
 
-import com.muratsystems.enchecarrinho.domain.model.Product;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @NoArgsConstructor @ToString
+@Getter @Setter
+@ToString @NoArgsConstructor
 public class ProductCartDTO {
 
-	private String description;
-	private BigDecimal unitaryValue;
+	private ProductDTO product;
+	private Integer quantity;
+	private BigDecimal discountByType;
 	
+	public ProductCartDTO(ProductDTO product, Integer quantity) {
+		this.product = product;
+		this.quantity = quantity;
+	}
 	
-	public ProductCartDTO(Product product) {
-		this.description = product.getDescription();
-		this.unitaryValue = product.getUnitaryValue();
+	public BigDecimal getTotalValue() {
+		if (product != null) {
+			return product.getUnitaryValue().multiply(new BigDecimal(quantity.toString()));
+		}
+		return BigDecimal.ZERO;
 	}
 	
 }

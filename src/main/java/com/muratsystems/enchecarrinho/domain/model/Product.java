@@ -27,12 +27,16 @@ public class Product {
 
 	@Getter @Setter
 	private String description;
+	
+	@Getter @Setter
+	private String type;
 
 	@Getter @Setter
 	private BigDecimal unitaryValue;
 	
 	public Product(ProductDTO productDTO) {
 		description = productDTO.getDescription();
+		type = productDTO.getType();
 		unitaryValue = productDTO.getUnitaryValue();
 	}
 
