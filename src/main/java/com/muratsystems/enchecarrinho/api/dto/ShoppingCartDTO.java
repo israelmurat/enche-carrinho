@@ -18,6 +18,8 @@ public class ShoppingCartDTO {
 	private List<ProductCartDTO> productsCart = new ArrayList<>();
 	private CouponDTO coupon;
 	private BigDecimal progressiveDiscount;
+	private BigDecimal totalValue;
+	private BigDecimal totalValueWithDiscount;
 
 	public void addProducts(ProductDTO product) {
 		boolean isAddProduct = false;
@@ -35,6 +37,7 @@ public class ShoppingCartDTO {
 		}
 		setDiscountByType();
 		setDiscountByTotal();
+		setTotals();
 	}
 	
 	private void setDiscountByType() {
@@ -71,6 +74,15 @@ public class ShoppingCartDTO {
 		} else if (totalValueCart.compareTo(new BigDecimal("10000")) > 0) {
 			progressiveDiscount = new BigDecimal("10");
 		}
+	}
+	
+	private void setTotals() {
+		totalValue = productsCart.stream()
+				.map(p -> p.getTotalValue())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		totalValueWithDiscount = productsCart.stream()
+				.map(p -> p.getTotalValueWithDiscount())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 }

@@ -35,7 +35,7 @@ public class ShoppingCartController {
 	private CouponService couponService;
 
 	@PostMapping(value = "/{idProduct}")
-	public ResponseEntity<List<ProductCartDTO>> addToChart(@CookieValue("cart") Optional<String> jsonCart,
+	public ResponseEntity<ShoppingCartDTO> addToChart(@CookieValue("cart") Optional<String> jsonCart,
 			HttpServletResponse response, @PathVariable("idProduct") Long idProducut) throws JsonProcessingException {
 
 		/**
@@ -51,11 +51,12 @@ public class ShoppingCartController {
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 
-		return new ResponseEntity<>(shoppingCart.getProductsCart(), HttpStatus.OK);
+		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
 
 	}
 
 	private ShoppingCartDTO getShoppingCartByCookie(Optional<String> jsonCart) {
+		jsonCart = Optional.of("{\"productsCart\":[{\"product\":{\"id\":1,\"description\":\"Coca-Cola\",\"type\":\"Bebidas\",\"unitaryValue\":2.50},\"quantity\":1,\"discountByType\":0,\"discountByCoupon\":0],\"coupon\":null,\"progressiveDiscount\":0,\"totalValue\":2.50,\"totalValueWithDiscount\":2.50}");
 		ShoppingCartDTO shoppingCart = jsonCart.map(json -> {
 			try {
 				return new ObjectMapper().readValue(json, ShoppingCartDTO.class);
