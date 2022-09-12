@@ -17,15 +17,15 @@ public class ProductCartDTO {
 	private ProductDTO product;
 	private Integer quantity;
 	private BigDecimal discountByType = BigDecimal.ZERO;
-	private BigDecimal discountByCoupon = BigDecimal.ZERO;
+//	private BigDecimal discountByCoupon = BigDecimal.ZERO;
 
-	public ProductCartDTO(ProductDTO product, Integer quantity, BigDecimal discountByCoupon) {
+	public ProductCartDTO(ProductDTO product, Integer quantity/*, BigDecimal discountByCoupon*/) {
 		this.product = product;
 		this.quantity = quantity;
-		this.discountByCoupon = discountByCoupon != null ? discountByCoupon : BigDecimal.ZERO;
+//		this.discountByCoupon = discountByCoupon != null ? discountByCoupon : BigDecimal.ZERO;
 	}
 
-	public BigDecimal getTotalValue() {
+	public BigDecimal defineTotalValue() {
 		if (product != null) {
 			return product.getUnitaryValue().multiply(new BigDecimal(quantity.toString())).setScale(2,
 					RoundingMode.HALF_EVEN);
@@ -33,9 +33,30 @@ public class ProductCartDTO {
 		return BigDecimal.ZERO;
 	}
 
-	public BigDecimal getTotalValueWithDiscount() {
-		if (!discountByCoupon.equals(BigDecimal.ZERO) || !discountByType.equals(BigDecimal.ZERO)) {
+//	public BigDecimal defineTotalValueWithDiscount() {
+//		if (!discountByCoupon.equals(BigDecimal.ZERO) || !discountByType.equals(BigDecimal.ZERO)) {
+//			if (product != null) {
+//				BigDecimal percent = new BigDecimal("100");
+//				BigDecimal total = product.getUnitaryValue().multiply(new BigDecimal(quantity.toString()));
+//				BigDecimal valueDiscountCoupon = product.getUnitaryValue().multiply(discountByCoupon).divide(percent, 2,
+//						RoundingMode.HALF_EVEN);
+//				BigDecimal valueDiscountType = product.getUnitaryValue().multiply(discountByType).divide(percent, 2,
+//						RoundingMode.HALF_EVEN);
+//				return total.subtract(valueDiscountCoupon).subtract(valueDiscountType).setScale(2,
+//						RoundingMode.HALF_EVEN);
+//			}
+//		}
+//		return defineTotalValue();
+//	}
+	public BigDecimal defineTotalValueWithDiscount() {
+		if (!discountByType.equals(BigDecimal.ZERO)) {
 			if (product != null) {
+				BigDecimal indexTypeDiscount = BigDecimal.ONE
+						.subtract(discountByType.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
+				
+				
+				
+				
 				BigDecimal percent = new BigDecimal("100");
 				BigDecimal total = product.getUnitaryValue().multiply(new BigDecimal(quantity.toString()));
 				BigDecimal valueDiscountCoupon = product.getUnitaryValue().multiply(discountByCoupon).divide(percent, 2,
@@ -46,7 +67,7 @@ public class ProductCartDTO {
 						RoundingMode.HALF_EVEN);
 			}
 		}
-		return getTotalValue();
+		return defineTotalValue();
 	}
 
 }

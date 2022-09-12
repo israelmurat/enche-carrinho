@@ -1,6 +1,7 @@
 package com.muratsystems.enchecarrinho.api.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ShoppingCartDTO {
 		setDiscountByTotal();
 		setTotals();
 	}
-	
+
 	private void setDiscountByType() {
 		Map<String, Integer> mapProduct = new HashMap<>();
 		for (ProductCartDTO productCart : productsCart) {
@@ -63,8 +64,7 @@ public class ShoppingCartDTO {
 
 	private void setDiscountByTotal() {
 		progressiveDiscount = BigDecimal.ZERO;
-		BigDecimal totalValueCart = productsCart.stream()
-				.map(p -> p.getTotalValueWithDiscount())
+		BigDecimal totalValueCart = productsCart.stream().map(p -> p.defineTotalValueWithDiscount())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		if (totalValueCart.compareTo(new BigDecimal("1000")) > 0) {
@@ -75,14 +75,17 @@ public class ShoppingCartDTO {
 			progressiveDiscount = new BigDecimal("10");
 		}
 	}
-	
+
 	private void setTotals() {
+		BigDecimal indexProgressiveDiscount = BigDecimal.ONE
+				.subtract(progressiveDiscount.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
 		totalValue = productsCart.stream()
-				.map(p -> p.getTotalValue())
+				.map(p -> p.defineTotalValue())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-		totalValueWithDiscount = productsCart.stream()
-				.map(p -> p.getTotalValueWithDiscount())
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		totalValueWithDiscount = (productsCart.stream()
+				.map(p -> p.defineTotalValueWithDiscount())
+				.reduce(BigDecimal.ZERO, BigDecimal::add)
+				).multiply(indexProgressiveDiscount).setScale(2, RoundingMode.HALF_EVEN);
 	}
 
 }

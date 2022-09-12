@@ -56,7 +56,6 @@ public class ShoppingCartController {
 	}
 
 	private ShoppingCartDTO getShoppingCartByCookie(Optional<String> jsonCart) {
-		jsonCart = Optional.of("{\"productsCart\":[{\"product\":{\"id\":1,\"description\":\"Coca-Cola\",\"type\":\"Bebidas\",\"unitaryValue\":2.50},\"quantity\":1,\"discountByType\":0,\"discountByCoupon\":0],\"coupon\":null,\"progressiveDiscount\":0,\"totalValue\":2.50,\"totalValueWithDiscount\":2.50}");
 		ShoppingCartDTO shoppingCart = jsonCart.map(json -> {
 			try {
 				return new ObjectMapper().readValue(json, ShoppingCartDTO.class);
