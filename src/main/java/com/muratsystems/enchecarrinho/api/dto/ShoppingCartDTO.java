@@ -24,21 +24,20 @@ public class ShoppingCartDTO {
 
 	public void addProducts(ProductDTO product) {
 		boolean isAddProduct = false;
-		BigDecimal discountByCoupon = coupon != null ? coupon.getDiscountPercentage() : BigDecimal.ZERO;
 		for (ProductCartDTO productCart : productsCart) {
 			if (!isAddProduct && productCart.getProduct().equals(product)) {
 				productCart.setQuantity(productCart.getQuantity() + 1);
-				productCart.setDiscountByCoupon(discountByCoupon);
 				isAddProduct = true;
+				break;
 			}
 		}
 		if (!isAddProduct) {
-			ProductCartDTO newProductCart = new ProductCartDTO(product, 1, discountByCoupon);
+			ProductCartDTO newProductCart = new ProductCartDTO(product, 1/*, discountByCoupon*/);
 			productsCart.add(newProductCart);
 		}
 		setDiscountByType();
 		setDiscountByTotal();
-		setTotals();
+		defineTotals();
 	}
 
 	private void setDiscountByType() {
@@ -64,19 +63,24 @@ public class ShoppingCartDTO {
 
 	private void setDiscountByTotal() {
 		progressiveDiscount = BigDecimal.ZERO;
-		BigDecimal totalValueCart = productsCart.stream().map(p -> p.defineTotalValueWithDiscount())
+		BigDecimal totalValueCart = productsCart.stream().map(p -> p.defineTotalValue())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		if (totalValueCart.compareTo(new BigDecimal("1000")) > 0) {
+		if (totalValueCart.compareTo(new BigDecimal("1000")) > 0 
+				&& totalValueCart.compareTo(new BigDecimal("5000")) <= 0) {
 			progressiveDiscount = new BigDecimal("5");
-		} else if (totalValueCart.compareTo(new BigDecimal("5000")) > 0) {
+		} else if (totalValueCart.compareTo(new BigDecimal("5000")) > 0 
+				&& totalValueCart.compareTo(new BigDecimal("10000")) <= 0) {
 			progressiveDiscount = new BigDecimal("7");
 		} else if (totalValueCart.compareTo(new BigDecimal("10000")) > 0) {
 			progressiveDiscount = new BigDecimal("10");
 		}
 	}
 
-	private void setTotals() {
+	public void defineTotals() {
+		BigDecimal percCouponDiscount = coupon != null ? coupon.getDiscountPercentage() : BigDecimal.ZERO;
+		BigDecimal indexCouponDiscount = BigDecimal.ONE
+				.subtract(percCouponDiscount.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
 		BigDecimal indexProgressiveDiscount = BigDecimal.ONE
 				.subtract(progressiveDiscount.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
 		totalValue = productsCart.stream()
@@ -85,7 +89,8 @@ public class ShoppingCartDTO {
 		totalValueWithDiscount = (productsCart.stream()
 				.map(p -> p.defineTotalValueWithDiscount())
 				.reduce(BigDecimal.ZERO, BigDecimal::add)
-				).multiply(indexProgressiveDiscount).setScale(2, RoundingMode.HALF_EVEN);
+				).multiply(indexCouponDiscount)
+				.multiply(indexProgressiveDiscount).setScale(2, RoundingMode.HALF_EVEN);
 	}
 
 }

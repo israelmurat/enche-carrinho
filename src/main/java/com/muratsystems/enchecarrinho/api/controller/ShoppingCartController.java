@@ -1,6 +1,5 @@
 package com.muratsystems.enchecarrinho.api.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
-import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
 import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
 import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
 import com.muratsystems.enchecarrinho.domain.service.CouponService;
@@ -44,14 +42,15 @@ public class ShoppingCartController {
 		 */
 
 		// ObjectMapper é classe do Jackson que desserializa o Json.
-		ShoppingCartDTO shoppingCart = getShoppingCartByCookie(jsonCart);
-		shoppingCart.addProducts(productService.findById(idProducut));
+		Optional<ShoppingCartDTO> optCart = Optional.ofNullable(getShoppingCartByCookie(jsonCart));
+		optCart.get().addProducts(productService.findById(idProducut));
 
-		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(shoppingCart));
+		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(optCart.get()));
 		cookie.setHttpOnly(true);
+		cookie.setPath("/cart");
 		response.addCookie(cookie);
 
-		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
+		return new ResponseEntity<>(optCart.get(), HttpStatus.OK);
 
 	}
 
@@ -67,7 +66,7 @@ public class ShoppingCartController {
 	}
 
 	@PostMapping(value = "/apply-coupon/{codeCoupon}")
-	public ResponseEntity<List<ProductCartDTO>> applyCoupon(@CookieValue("cart") Optional<String> jsonCart,
+	public ResponseEntity<ShoppingCartDTO> applyCoupon(@CookieValue("cart") Optional<String> jsonCart,
 			HttpServletResponse response, @PathVariable("codeCoupon") String codeCoupon)
 			throws JsonProcessingException {
 
@@ -93,12 +92,14 @@ public class ShoppingCartController {
 			// Aplicar desconto
 			optCart.get().setCoupon(optNewCoupon.get());
 		}
+		optCart.get().defineTotals();
 
 		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(optCart.get()));
 		cookie.setHttpOnly(true);
+		cookie.setPath("/cart");
 		response.addCookie(cookie);
 
-		return new ResponseEntity<>(optCart.get().getProductsCart(), HttpStatus.OK);
+		return new ResponseEntity<>(optCart.get(), HttpStatus.OK);
 
 	}
 
