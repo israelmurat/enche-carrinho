@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
 
 import lombok.EqualsAndHashCode;
@@ -33,12 +34,13 @@ public class Coupon {
 	private BigDecimal discountPercentage;
 	
 	@Getter @Setter
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime expiration;
 
 	public Coupon(CouponDTO couponDTO) {
 		code = couponDTO.getCode();
 		discountPercentage = couponDTO.getDiscountPercentage();
-		expiration = couponDTO.getExpiration();
+		expiration = LocalDateTime.parse(couponDTO.getExpiration());
 	}
 	
 }
