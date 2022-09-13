@@ -1,5 +1,6 @@
 package com.muratsystems.enchecarrinho.api.controller;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -76,8 +77,7 @@ public class ShoppingCartController {
 		}
 
 		Optional<CouponDTO> optNewCoupon = couponService.findByCode(codeCoupon);
-//		if (!optNewCoupon.isPresent() || optNewCoupon.get().getExpiration().isBefore(LocalDateTime.now())) {
-		if (!optNewCoupon.isPresent()) {
+		if (!optNewCoupon.isPresent() || optNewCoupon.get().getExpiration().isBefore(LocalDateTime.now())) {
 			throw new BusinessException("Cupom de desconto não cadastrado ou já está expirado!");
 		}
 

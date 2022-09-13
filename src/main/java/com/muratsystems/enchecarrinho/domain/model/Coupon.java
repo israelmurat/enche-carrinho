@@ -38,6 +38,7 @@ public class Coupon {
 	public Coupon(CouponDTO couponDTO) {
 		code = couponDTO.getCode();
 		discountPercentage = couponDTO.getDiscountPercentage();
+		expiration = couponDTO.getExpiration();
 	}
 	
 }
