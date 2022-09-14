@@ -24,17 +24,11 @@ import com.muratsystems.enchecarrinho.domain.service.ShoppingCarService;
 @RequestMapping(value = "/cart")
 public class ShoppingCartController {
 
-//	@Autowired
-//	private ProductService productService;
-
-//	@Autowired
-//	private CouponService couponService;
-	
 	@Autowired
 	private ShoppingCarService shoppingCarService;
 
 	@PostMapping(value = "/{idProduct}")
-	public ResponseEntity<ShoppingCartDTO> addToChart(@CookieValue("cart") Optional<String> jsonCart,
+	public ResponseEntity<ShoppingCartDTO> addToCart(@CookieValue("cart") Optional<String> jsonCart,
 			HttpServletResponse response, @PathVariable("idProduct") Long idProducut) throws JsonProcessingException {
 
 		/**
@@ -44,12 +38,10 @@ public class ShoppingCartController {
 
 		// ObjectMapper é classe do Jackson que desserializa o Json.
 		Optional<ShoppingCartDTO> optCart = Optional.ofNullable(getShoppingCartByCookie(jsonCart));
-		shoppingCarService.addProductToCart(optCart.get(), idProducut);
+		var shoppingCart = shoppingCarService.addProductToCart(optCart.get(), idProducut);
 		
-//		optCart.get().addProducts(productService.findById(idProducut));
-
-		createCookieCart(optCart.get(), response);
-		return new ResponseEntity<>(optCart.get(), HttpStatus.OK);
+		createCookieCart(shoppingCart, response);
+		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
 
 	}
 
@@ -73,29 +65,6 @@ public class ShoppingCartController {
 		if (!optCart.isPresent() || optCart.get().getProductsCart().isEmpty()) {
 			throw new ValidationException("Não é possível aplicar o cupom com o carrinho vazio!");
 		}
-		
-		
-//		if (!optCart.isPresent() || optCart.get().getProductsCart().isEmpty()) {
-//			throw new BusinessException("Não é possível aplicar o cupom com o carrinho vazio!");
-//		}
-//
-//		Optional<CouponDTO> optNewCoupon = couponService.findByCode(codeCoupon);
-//		if (!optNewCoupon.isPresent() || optNewCoupon.get().getExpiration().isBefore(LocalDateTime.now())) {
-//			throw new BusinessException("Cupom de desconto não cadastrado ou já está expirado!");
-//		}
-//
-//		Optional<CouponDTO> optCouponCart = Optional.ofNullable(optCart.get().getCoupon());
-//
-//		if (optCouponCart.isPresent()) {
-//			if (optNewCoupon.get().getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) > 0) {
-//				// Retirar desconto e reaplicar
-//				optCart.get().setCoupon(optNewCoupon.get());
-//			}
-//		} else {
-//			// Aplicar desconto
-//			optCart.get().setCoupon(optNewCoupon.get());
-//		}
-//		optCart.get().defineTotals();
 		
 		shoppingCarService.applyCoupon(optCart.get(), codeCoupon);
 		

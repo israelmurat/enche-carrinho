@@ -7,16 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
-import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class ShoppingCart {
 
 	private List<ProductCart> productsCart = new ArrayList<>();
@@ -24,23 +23,6 @@ public class ShoppingCart {
 	private BigDecimal progressiveDiscount;
 	private BigDecimal totalValue;
 	private BigDecimal totalValueWithDiscount;
-	
-	public ShoppingCart(ShoppingCartDTO shoppingCartDTO) {
-		defineProductsCartByDto(shoppingCartDTO.getProductsCart());
-		this.coupon = new Coupon(shoppingCartDTO.getCoupon());
-		this.progressiveDiscount = shoppingCartDTO.getProgressiveDiscount();
-		this.totalValue = shoppingCartDTO.getTotalValue();
-		this.totalValueWithDiscount = shoppingCartDTO.getTotalValueWithDiscount();
-	}
-	
-	private void defineProductsCartByDto(List<ProductCartDTO> productsCartDTO) {
-		productsCart = new ArrayList<>();
-		if (productsCartDTO != null) {
-			for (ProductCartDTO productCartDTO : productsCartDTO) {
-				productsCart.add(new ProductCart(productCartDTO));
-			}
-		}
-	}
 
 	public void addProducts(Product product) {
 		boolean isAddProduct = false;

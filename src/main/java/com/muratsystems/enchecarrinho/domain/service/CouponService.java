@@ -2,6 +2,7 @@ package com.muratsystems.enchecarrinho.domain.service;
 
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +17,35 @@ public class CouponService {
 	@Autowired
 	private CouponRepository couponRepository;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	public CouponDTO addCoupon(CouponDTO couponDTO) {
 		Optional<Coupon> optCoupon =  couponRepository.findByCode(couponDTO.getCode());
 		if (optCoupon.isPresent()) {
 			throw new BusinessException("Já existe um cupom cadastrado com este código!");
 		}
-		return new CouponDTO(couponRepository.save(new Coupon(couponDTO)));
+		return toDto(couponRepository.save(toEntity(couponDTO)));
 	}
 	
 	public Optional<CouponDTO> findById(Long idCoupon) {
-		return Optional.ofNullable(new CouponDTO(couponRepository.findById(idCoupon).get()));
+		return Optional.ofNullable(toDto(couponRepository.findById(idCoupon).get()));
 	}
 	
 	public Optional<CouponDTO> findByCode(String code) {
 		Optional<Coupon> optCoupon = couponRepository.findByCode(code);
 		if (optCoupon.isPresent()) {
-			return Optional.ofNullable(new CouponDTO(couponRepository.findByCode(code).get()));
+			return Optional.ofNullable(toDto(couponRepository.findByCode(code).get()));
 		}
 		return Optional.empty();
+	}
+	
+	private Coupon toEntity(CouponDTO couponDTO) {
+		return modelMapper.map(couponDTO, Coupon.class);
+	}
+	
+	private CouponDTO toDto(Coupon coupon) {
+		return modelMapper.map(coupon, CouponDTO.class);
 	}
 	
 }

@@ -10,7 +10,7 @@ public class JacksonConfig {
 
 	@Bean
 	public ObjectMapper objectMapper() {
-		ObjectMapper mapper = new ObjectMapper(); 
+		var mapper = new ObjectMapper(); 
 		mapper.findAndRegisterModules();
 	    return mapper;
 	}

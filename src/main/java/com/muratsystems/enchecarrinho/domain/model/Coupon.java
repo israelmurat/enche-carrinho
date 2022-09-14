@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,11 +35,5 @@ public class Coupon {
 	@Getter @Setter
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime expiration;
-
-	public Coupon(CouponDTO couponDTO) {
-		code = couponDTO.getCode();
-		discountPercentage = couponDTO.getDiscountPercentage();
-		expiration = LocalDateTime.parse(couponDTO.getExpiration());
-	}
 	
 }

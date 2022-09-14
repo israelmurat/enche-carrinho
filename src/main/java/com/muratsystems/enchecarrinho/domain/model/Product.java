@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.muratsystems.enchecarrinho.api.dto.ProductDTO;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +20,7 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@EqualsAndHashCode.Include
-	@Getter
+	@Getter @Setter
 	private Long id;
 
 	@Getter @Setter
@@ -33,11 +31,5 @@ public class Product {
 
 	@Getter @Setter
 	private BigDecimal unitaryValue;
-	
-	public Product(ProductDTO productDTO) {
-		description = productDTO.getDescription();
-		type = productDTO.getType();
-		unitaryValue = productDTO.getUnitaryValue();
-	}
 
 }

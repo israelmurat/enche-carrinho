@@ -3,8 +3,6 @@ package com.muratsystems.enchecarrinho.domain.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.muratsystems.enchecarrinho.api.dto.ProductCartDTO;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,12 +21,6 @@ public class ProductCart {
 	public ProductCart(Product product, Integer quantity) {
 		this.product = product;
 		this.quantity = quantity;
-	}
-	
-	public ProductCart(ProductCartDTO productCartDTO) {
-		this.product = new Product(productCartDTO.getProduct());
-		this.quantity = productCartDTO.getQuantity();
-		this.discountByType = productCartDTO.getDiscountByType();
 	}
 
 	public BigDecimal defineTotalValue() {
