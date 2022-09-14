@@ -15,11 +15,4 @@ public class CouponDTO {
 	private BigDecimal discountPercentage;
 	private String expiration;
 	
-//	public CouponDTO(Coupon coupon) {
-//		id = coupon.getId();
-//		code = coupon.getCode();
-//		discountPercentage = coupon.getDiscountPercentage();
-//		expiration = coupon.getExpiration().toString();
-//	}
-	
 }

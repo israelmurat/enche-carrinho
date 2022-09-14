@@ -16,10 +16,5 @@ public class ProductCartDTO {
 	private ProductDTO product;
 	private Integer quantity;
 	private BigDecimal discountByType = BigDecimal.ZERO;
-
-	public ProductCartDTO(ProductDTO product, Integer quantity) {
-		this.product = product;
-		this.quantity = quantity;
-	}
 	
 }

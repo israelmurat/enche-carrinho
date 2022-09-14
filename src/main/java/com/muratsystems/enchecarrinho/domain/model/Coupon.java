@@ -23,7 +23,7 @@ public class Coupon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@EqualsAndHashCode.Include
-	@Getter
+	@Getter @Setter
 	private Long id;
 	
 	@Getter @Setter

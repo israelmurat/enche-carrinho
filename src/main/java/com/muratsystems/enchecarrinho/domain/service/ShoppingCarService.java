@@ -36,7 +36,7 @@ public class ShoppingCarService {
 		return toShoppingCartDto(shoppingCart);
 	}
 	
-	public void applyCoupon(ShoppingCartDTO shoppingCartDTO, String codeCoupon) {
+	public ShoppingCartDTO applyCoupon(ShoppingCartDTO shoppingCartDTO, String codeCoupon) {
 		
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
 
@@ -65,7 +65,7 @@ public class ShoppingCarService {
 		}
 		shoppingCart.defineTotals();
 		
-		shoppingCartDTO = toShoppingCartDto(shoppingCart);
+		return toShoppingCartDto(shoppingCart);
 		
 	}
 	

@@ -40,13 +40,13 @@ public class ShoppingCartController {
 		Optional<ShoppingCartDTO> optCart = Optional.ofNullable(getShoppingCartByCookie(jsonCart));
 		var shoppingCart = shoppingCarService.addProductToCart(optCart.get(), idProducut);
 		
-		createCookieCart(shoppingCart, response);
+		saveCookieCart(shoppingCart, response);
 		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
 
 	}
 
 	private ShoppingCartDTO getShoppingCartByCookie(Optional<String> jsonCart) {
-		ShoppingCartDTO shoppingCart = jsonCart.map(json -> {
+		var shoppingCart = jsonCart.map(json -> {
 			try {
 				return new ObjectMapper().readValue(json, ShoppingCartDTO.class);
 			} catch (JsonProcessingException e) {
@@ -66,15 +66,15 @@ public class ShoppingCartController {
 			throw new ValidationException("Não é possível aplicar o cupom com o carrinho vazio!");
 		}
 		
-		shoppingCarService.applyCoupon(optCart.get(), codeCoupon);
+		var shoppingCart = shoppingCarService.applyCoupon(optCart.get(), codeCoupon);
 		
-		createCookieCart(optCart.get(), response);
-		return new ResponseEntity<>(optCart.get(), HttpStatus.OK);
+		saveCookieCart(shoppingCart, response);
+		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
 
 	}
 	
-	private void createCookieCart(ShoppingCartDTO shoppingCart, HttpServletResponse response) throws JsonProcessingException {
-		Cookie cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(shoppingCart));
+	private void saveCookieCart(ShoppingCartDTO shoppingCart, HttpServletResponse response) throws JsonProcessingException {
+		var cookie = new Cookie("cart", new ObjectMapper().writeValueAsString(shoppingCart));
 		cookie.setHttpOnly(true);
 		cookie.setPath("/cart");
 		response.addCookie(cookie);

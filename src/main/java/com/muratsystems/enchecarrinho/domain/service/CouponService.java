@@ -35,7 +35,7 @@ public class CouponService {
 	public Optional<CouponDTO> findByCode(String code) {
 		Optional<Coupon> optCoupon = couponRepository.findByCode(code);
 		if (optCoupon.isPresent()) {
-			return Optional.ofNullable(toDto(couponRepository.findByCode(code).get()));
+			return Optional.ofNullable(toDto(optCoupon.get()));
 		}
 		return Optional.empty();
 	}

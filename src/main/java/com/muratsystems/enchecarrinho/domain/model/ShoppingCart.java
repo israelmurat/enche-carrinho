@@ -26,7 +26,7 @@ public class ShoppingCart {
 
 	public void addProducts(Product product) {
 		boolean isAddProduct = false;
-		for (ProductCart productCart : productsCart) {
+		for (var productCart : productsCart) {
 			if (!isAddProduct && productCart.getProduct().equals(product)) {
 				productCart.setQuantity(productCart.getQuantity() + 1);
 				isAddProduct = true;
@@ -34,7 +34,7 @@ public class ShoppingCart {
 			}
 		}
 		if (!isAddProduct) {
-			ProductCart newProductCart = new ProductCart(product, 1);
+			var newProductCart = new ProductCart(product, 1);
 			productsCart.add(newProductCart);
 		}
 		setDiscountByType();
@@ -44,7 +44,7 @@ public class ShoppingCart {
 
 	private void setDiscountByType() {
 		Map<String, Integer> mapProduct = new HashMap<>();
-		for (ProductCart productCart : productsCart) {
+		for (var productCart : productsCart) {
 			String key = productCart.getProduct().getType();
 			if (mapProduct.containsKey(key)) {
 				mapProduct.put(key, mapProduct.get(key) + productCart.getQuantity());
@@ -52,7 +52,7 @@ public class ShoppingCart {
 				mapProduct.put(key, productCart.getQuantity());
 			}
 		}
-		for (ProductCart productCart : productsCart) {
+		for (var productCart : productsCart) {
 			productCart.setDiscountByType(BigDecimal.ZERO);
 			String key = productCart.getProduct().getType();
 			if (mapProduct.containsKey(key)) {
