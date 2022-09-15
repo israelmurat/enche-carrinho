@@ -2,7 +2,6 @@ package com.muratsystems.enchecarrinho.domain.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -13,12 +12,11 @@ import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
 import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
 import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
 import com.muratsystems.enchecarrinho.domain.model.Coupon;
-import com.muratsystems.enchecarrinho.domain.model.ProductCart;
 import com.muratsystems.enchecarrinho.domain.model.ShoppingCart;
 import com.muratsystems.enchecarrinho.domain.repository.ProductRepository;
 
 @Service
-public class ShoppingCarService {
+public class ShoppingCartService {
 	
 	@Autowired
 	private CouponService couponService;
@@ -31,11 +29,8 @@ public class ShoppingCarService {
 
 	public ShoppingCartDTO addProductToCart(ShoppingCartDTO shoppingCartDTO, Long idProducut) {
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
-		
-		/////
-		shoppingCart.addProducts(productRepository.findById(idProducut).orElseThrow()); //// ver
-		/////
-		
+		shoppingCart.addProducts(productRepository.findById(idProducut)
+				.orElseThrow(() -> new BusinessException("Produto não encontrado!"))); 
 		return toShoppingCartDto(shoppingCart);
 	}
 	
@@ -70,6 +65,7 @@ public class ShoppingCarService {
 				? shoppingCart.getCoupon().getDiscountPercentage() : BigDecimal.ZERO;
 		for (var productCart : shoppingCart.getProductsCart()) {
 			productCart.setPercentualDiscountByCoupon(discountByCoupon);
+			productCart.defineSubtotals();
 		}
 	}
 	

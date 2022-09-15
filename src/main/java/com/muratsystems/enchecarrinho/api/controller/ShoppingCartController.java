@@ -18,14 +18,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
 import com.muratsystems.enchecarrinho.domain.exception.ValidationException;
-import com.muratsystems.enchecarrinho.domain.service.ShoppingCarService;
+import com.muratsystems.enchecarrinho.domain.service.ShoppingCartService;
 
 @RestController
 @RequestMapping(value = "/cart")
 public class ShoppingCartController {
 
 	@Autowired
-	private ShoppingCarService shoppingCarService;
+	private ShoppingCartService shoppingCartService;
 
 	@PostMapping(value = "/{idProduct}")
 	public ResponseEntity<ShoppingCartDTO> addToCart(@CookieValue("cart") Optional<String> jsonCart,
@@ -38,7 +38,7 @@ public class ShoppingCartController {
 
 		// ObjectMapper é classe do Jackson que desserializa o Json.
 		Optional<ShoppingCartDTO> optCart = Optional.ofNullable(getShoppingCartByCookie(jsonCart));
-		var shoppingCart = shoppingCarService.addProductToCart(optCart.get(), idProducut);
+		var shoppingCart = shoppingCartService.addProductToCart(optCart.get(), idProducut);
 		
 		saveCookieCart(shoppingCart, response);
 		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class ShoppingCartController {
 			throw new ValidationException("Não é possível aplicar o cupom com o carrinho vazio!");
 		}
 		
-		var shoppingCart = shoppingCarService.applyCoupon(optCart.get(), codeCoupon);
+		var shoppingCart = shoppingCartService.applyCoupon(optCart.get(), codeCoupon);
 		
 		saveCookieCart(shoppingCart, response);
 		return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
