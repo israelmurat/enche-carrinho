@@ -1,3 +1,6 @@
+- Implementar Sub-totais dos itens (com e sem desconto);
+- Implementar exclusão item do carrinho;
+- Implementar exclusão de cupom no carrinho;
 - Alterar métodos nos services, tirando retorno de Optional para DTO, e alterar exceptions para orElseThrow();
 - Buscar mais possibilidade de usar orElseThrow() em outras classes;
 - Implementar validações;

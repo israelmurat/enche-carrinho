@@ -33,7 +33,7 @@ public class Coupon {
 	@Column(unique = true, nullable = false)
 	private String code;
 	
-	@Getter @Setter
+	@Setter
 	@Column(nullable = false)
 	private BigDecimal discountPercentage;
 	
@@ -41,5 +41,12 @@ public class Coupon {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(nullable = false)
 	private LocalDateTime expiration;
+
+	public BigDecimal getDiscountPercentage() {
+		if (discountPercentage != null)
+			return discountPercentage;
+		else
+			return BigDecimal.ZERO;
+	}
 	
 }

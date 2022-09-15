@@ -15,6 +15,10 @@ public class ProductCartDTO {
 
 	private ProductDTO product;
 	private Integer quantity;
-	private BigDecimal discountByType = BigDecimal.ZERO;
+	private BigDecimal discountByType;
+	private BigDecimal percentualProgressiveDiscount;
+	private BigDecimal percentualDiscountByCoupon;
+	private BigDecimal subTotalValue;
+	private BigDecimal subTotalValueWithDiscount;
 	
 }

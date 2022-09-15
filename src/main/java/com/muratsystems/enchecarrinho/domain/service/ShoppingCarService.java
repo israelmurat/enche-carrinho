@@ -1,6 +1,8 @@
 package com.muratsystems.enchecarrinho.domain.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -11,6 +13,7 @@ import com.muratsystems.enchecarrinho.api.dto.CouponDTO;
 import com.muratsystems.enchecarrinho.api.dto.ShoppingCartDTO;
 import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
 import com.muratsystems.enchecarrinho.domain.model.Coupon;
+import com.muratsystems.enchecarrinho.domain.model.ProductCart;
 import com.muratsystems.enchecarrinho.domain.model.ShoppingCart;
 import com.muratsystems.enchecarrinho.domain.repository.ProductRepository;
 
@@ -55,10 +58,19 @@ public class ShoppingCarService {
 			// Aplicar desconto
 			shoppingCart.setCoupon(newCoupon);
 		}
+		definePercentageCouponToProducts(shoppingCart);
 		shoppingCart.defineTotals();
 		
 		return toShoppingCartDto(shoppingCart);
 		
+	}
+	
+	private void definePercentageCouponToProducts(ShoppingCart shoppingCart) {
+		BigDecimal discountByCoupon = shoppingCart.getCoupon() != null 
+				? shoppingCart.getCoupon().getDiscountPercentage() : BigDecimal.ZERO;
+		for (var productCart : shoppingCart.getProductsCart()) {
+			productCart.setPercentualDiscountByCoupon(discountByCoupon);
+		}
 	}
 	
 	private ShoppingCart toShoppingCartEntity(ShoppingCartDTO shoppingCartDTO) {
