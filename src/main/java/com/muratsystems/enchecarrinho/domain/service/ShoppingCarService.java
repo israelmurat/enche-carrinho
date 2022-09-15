@@ -39,15 +39,7 @@ public class ShoppingCarService {
 	public ShoppingCartDTO applyCoupon(ShoppingCartDTO shoppingCartDTO, String codeCoupon) {
 		
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
-
-		Optional<CouponDTO> optNewCoupon = couponService.findByCode(codeCoupon);
-//		if (!optNewCoupon.isPresent() || optNewCoupon.get().getExpiration().isBefore(LocalDateTime.now())) {
-//			throw new BusinessException("Cupom de desconto não cadastrado ou já está expirado!");
-//		}
-		if (!optNewCoupon.isPresent()) {
-			throw new BusinessException("Cupom de desconto não cadastrado!");
-		}
-		var newCoupon = toCouponEntity(optNewCoupon.get());
+		var newCoupon = toCouponEntity(couponService.findByCode(codeCoupon));
 		if (newCoupon.getExpiration().isBefore(LocalDateTime.now())) {
 			throw new BusinessException("Cupom de desconto expirado!");
 		}

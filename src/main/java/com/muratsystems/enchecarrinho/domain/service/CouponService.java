@@ -28,16 +28,14 @@ public class CouponService {
 		return toDto(couponRepository.save(toEntity(couponDTO)));
 	}
 	
-	public Optional<CouponDTO> findById(Long idCoupon) {
-		return Optional.ofNullable(toDto(couponRepository.findById(idCoupon).get()));
+	public CouponDTO findById(Long idCoupon) {
+		return toDto(couponRepository.findById(idCoupon)
+				.orElseThrow(() -> new BusinessException("Cupom não encontrado!")));
 	}
 	
-	public Optional<CouponDTO> findByCode(String code) {
-		Optional<Coupon> optCoupon = couponRepository.findByCode(code);
-		if (optCoupon.isPresent()) {
-			return Optional.ofNullable(toDto(optCoupon.get()));
-		}
-		return Optional.empty();
+	public CouponDTO findByCode(String code) {
+		return toDto(couponRepository.findByCode(code)
+				.orElseThrow(() -> new BusinessException("Código do cupon inexistente!")));
 	}
 	
 	private Coupon toEntity(CouponDTO couponDTO) {

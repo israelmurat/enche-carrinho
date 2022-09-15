@@ -1,0 +1,13 @@
+- Alterar métodos nos services, tirando retorno de Optional para DTO, e alterar exceptions para orElseThrow();
+- Buscar mais possibilidade de usar orElseThrow() em outras classes;
+- Implementar validações;
+- Finalizar CRUDs;
+- Testes unitários;
+- Refatorar, deixar pronto;
+- Validar funcionalidades;
+- UTC de Datas;
+- Questão da data como String no CouponDTO;
+- Persistir carrinho;
+- Retirar alguns campos do DTO;
+- Validar funcionalidades;
+
