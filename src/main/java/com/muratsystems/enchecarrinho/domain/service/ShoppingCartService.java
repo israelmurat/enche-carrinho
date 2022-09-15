@@ -46,11 +46,9 @@ public class ShoppingCartService {
 
 		if (optCouponCart.isPresent()) {
 			if (newCoupon.getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) > 0) {
-				// Retirar desconto e reaplicar
 				shoppingCart.setCoupon(newCoupon);
 			}
 		} else {
-			// Aplicar desconto
 			shoppingCart.setCoupon(newCoupon);
 		}
 		definePercentageCouponToProducts(shoppingCart);

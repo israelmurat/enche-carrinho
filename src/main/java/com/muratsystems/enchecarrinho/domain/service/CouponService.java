@@ -1,7 +1,5 @@
 package com.muratsystems.enchecarrinho.domain.service;
 
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +19,7 @@ public class CouponService {
 	private ModelMapper modelMapper;
 	
 	public CouponDTO addCoupon(CouponDTO couponDTO) {
-		Optional<Coupon> optCoupon =  couponRepository.findByCode(couponDTO.getCode());
-		if (optCoupon.isPresent()) {
+		if (couponRepository.findByCode(couponDTO.getCode()).isPresent()) {
 			throw new BusinessException("Já existe um cupom cadastrado com este código!");
 		}
 		return toDto(couponRepository.save(toEntity(couponDTO)));

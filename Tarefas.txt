@@ -1,4 +1,4 @@
-- Implementar Sub-totais dos itens (com e sem desconto);
+- Implementar Sub-totais dos itens (com e sem desconto); ok
 - Implementar exclusão item do carrinho;
 - Implementar exclusão de cupom no carrinho;
 - Alterar métodos nos services, tirando retorno de Optional para DTO, e alterar exceptions para orElseThrow();

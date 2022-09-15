@@ -1,7 +1,5 @@
 package com.muratsystems.enchecarrinho.domain.service;
 
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,19 +19,15 @@ public class ProductService {
 	private ModelMapper modelMapper;
 	
 	public ProductDTO addProduct(ProductDTO productDTO) {
-		Optional<Product> optProduct = productRepository.findByDescription(productDTO.getDescription());
-		if (optProduct.isPresent()) {
+		if (productRepository.findByDescription(productDTO.getDescription()).isPresent()) {
 			throw new BusinessException("Já existe um produto cadastrado com esta descrição!");
 		}
 		return toDto(productRepository.save(toEntity(productDTO)));
 	}
 	
 	public ProductDTO findById(Long idProduct) {
-		Optional<Product> optProduct = productRepository.findById(idProduct);
-		if (optProduct.isPresent()) {
-			return toDto(optProduct.get());
-		}
-		throw new BusinessException("Produto não encontrado!");
+		return toDto(productRepository.findById(idProduct)
+				.orElseThrow(() -> new BusinessException("Produto não encontrado!")));
 	}
 	
 	private Product toEntity(ProductDTO productDTO) {
