@@ -26,7 +26,7 @@ public class CouponDTO {
 	@NotNull(message = "Percentual do desconto não foi informado!")
 	private BigDecimal discountPercentage;
 	
-	@NotBlank(message = "Data da expiração não foi informada!")
+	@NotBlank(message = "Data da expiração deve ser informada no formato yyyy-MM-ddTHH:mm:ss")
 	private String expiration;
 	
 }
