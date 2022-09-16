@@ -51,9 +51,9 @@ public class CouponService {
 				throw new BusinessException("Código já está sendo usado para outro cupom!");
 			}
 		}
-		var newCoupon = toEntity(couponDTO);
-		newCoupon.setId(idCoupon);
-		return toDto(couponRepository.save(newCoupon));
+		var coupon = toEntity(couponDTO);
+		coupon.setId(idCoupon);
+		return toDto(couponRepository.save(coupon));
 	}
 	
 	public void delete(Long idCoupon) {

@@ -26,6 +26,13 @@ public class ShoppingCart {
 	private BigDecimal totalValueWithDiscount = BigDecimal.ZERO;
 
 	public void addProduct(Product product) {
+		addToCart(product);
+		mapAndDefineDiscountByType();
+		defineDiscountsProgressiveAndCoupon();
+		defineTotals();
+	}
+	
+	private void addToCart(Product product) {
 		boolean isAddProduct = false;
 		for (var productCart : productsCart) {
 			if (!isAddProduct && productCart.getProduct().equals(product)) {
@@ -38,9 +45,6 @@ public class ShoppingCart {
 			var newProductCart = new ProductCart(product, 1);
 			productsCart.add(newProductCart);
 		}
-		mapAndDefineDiscountByType();
-		defineDiscountsProgressiveAndCoupon();
-		defineTotals();
 	}
 	
 	public void removeProduct(Long idProducut) {

@@ -6,8 +6,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +28,13 @@ public class ProductController {
 	private ProductService productService;
 	
 	@GetMapping
-	public List<ProductDTO> getAllProducts() {
-		return null;
+	public ResponseEntity<List<ProductDTO>> getAllProducts() {
+		return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{idProduct}")
+	public ResponseEntity<ProductDTO> getById(@PathVariable Long idProduct) {
+		return new ResponseEntity<>(productService.findById(idProduct), HttpStatus.OK);
 	}
 	
 	@PostMapping
@@ -36,14 +43,16 @@ public class ProductController {
 		return productService.addProduct(product);
 	}
 	
-	@PutMapping(value = "/{id}/update")
-	public void updateProduct() {
-		
+	@PutMapping(value = "/{idProduct}")
+	public ResponseEntity<ProductDTO> updateProduct(@Valid @PathVariable Long idProduct, 
+			@RequestBody ProductDTO productDTO) {
+		return new ResponseEntity<>(productService.update(idProduct, productDTO), HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value = "/{id}/delete")
-	public void deleteProduct() {
-		
+	@DeleteMapping(value = "/{idProduct}")
+	public ResponseEntity<Void> deleteProduct(@PathVariable Long idProduct) {
+		productService.delete(idProduct);
+		return ResponseEntity.noContent().build();
 	}
 	
 }
