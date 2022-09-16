@@ -1,4 +1,4 @@
-package com.muratsystems.enchecarrinho.core;
+package com.muratsystems.enchecarrinho.config;
 
 import org.apache.tomcat.util.http.LegacyCookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;

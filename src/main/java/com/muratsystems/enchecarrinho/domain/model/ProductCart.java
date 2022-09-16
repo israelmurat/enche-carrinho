@@ -31,13 +31,6 @@ public class ProductCart {
 		defineSubTotalValueWithDiscount();
 	}
 
-//	public BigDecimal defineSubTotalValue() {
-//		if (product != null) {
-//			return product.getUnitaryValue().multiply(new BigDecimal(quantity.toString())).setScale(2,
-//					RoundingMode.HALF_EVEN);
-//		}
-//		return BigDecimal.ZERO;
-//	}
 	private void defineSubTotalValue() {
 		subTotalValue = BigDecimal.ZERO;
 		if (product != null) {
@@ -46,20 +39,6 @@ public class ProductCart {
 		}
 	}
 	
-//	public BigDecimal defineSubTotalValueWithDiscount() {
-//		if (product != null) {
-//			BigDecimal indexTypeDiscount = BigDecimal.ONE
-//					.subtract(percentualDiscountByType.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
-//			BigDecimal indexCouponDiscount = BigDecimal.ONE
-//					.subtract(percentualDiscountByCoupon.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
-//			BigDecimal indexProgressiveDiscount = BigDecimal.ONE
-//					.subtract(percentualProgressiveDiscount.divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN));
-//			return defineSubTotalValue().multiply(indexTypeDiscount)
-//					.multiply(indexCouponDiscount).multiply(indexProgressiveDiscount)
-//					.setScale(2, RoundingMode.HALF_EVEN);
-//		}
-//		return BigDecimal.ZERO;
-//	}
 	private void defineSubTotalValueWithDiscount() {
 		subTotalValueWithDiscount = subTotalValue;
 		if (product != null) {

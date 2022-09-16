@@ -1,10 +1,10 @@
 package com.muratsystems.enchecarrinho.domain.exception;
 
-public class ValidationException extends RuntimeException {
+public class CustomRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = -800170752496060259L;
 
-	public ValidationException(String message) {
+	public CustomRuntimeException(String message) {
 		super(message);
 	}
 

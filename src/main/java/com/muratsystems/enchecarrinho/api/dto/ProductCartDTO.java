@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
+@Getter @Setter
+@ToString @NoArgsConstructor
 public class ProductCartDTO {
 
 	private ProductDTO product;

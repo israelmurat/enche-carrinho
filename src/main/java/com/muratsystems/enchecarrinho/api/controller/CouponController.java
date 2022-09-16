@@ -2,6 +2,8 @@ package com.muratsystems.enchecarrinho.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class CouponController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) 
-	public CouponDTO addCoupon(@RequestBody CouponDTO couponDTO) {
+	public CouponDTO addCoupon(@RequestBody @Valid CouponDTO couponDTO) {
 		return couponService.addCoupon(couponDTO);
 	}
 	

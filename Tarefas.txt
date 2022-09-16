@@ -1,16 +1,18 @@
-- Implementar Sub-totais dos itens (com e sem desconto); ok
-- Implementar exclusão item do carrinho;
+- Implementar Sub-totais dos itens (com e sem desconto); OK
+- Implementar exclusão item do carrinho; OK
 - Implementar exclusão de cupom no carrinho;
-- Alterar métodos nos services, tirando retorno de Optional para DTO, e alterar exceptions para orElseThrow();
-- Buscar mais possibilidade de usar orElseThrow() em outras classes;
-- Implementar validações;
+- Alterar métodos nos services, tirando retorno de Optional para DTO, e alterar exceptions para orElseThrow(); OK
+- Buscar mais possibilidade de usar orElseThrow() em outras classes; OK
+- Implementar validações; OK - questão das datas?
 - Finalizar CRUDs;
 - Testes unitários;
-- Refatorar, deixar pronto;
+- Refatorar, deixar pronto; OK
 - Validar funcionalidades;
 - UTC de Datas;
 - Questão da data como String no CouponDTO;
 - Persistir carrinho;
 - Retirar alguns campos do DTO;
 - Validar funcionalidades;
+
+// ObjectMapper é classe do Jackson que desserializa o Json.
 

@@ -2,6 +2,8 @@ package com.muratsystems.enchecarrinho.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,7 @@ public class ProductController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) 
-	public ProductDTO addProduct(@RequestBody ProductDTO product) {
+	public ProductDTO addProduct(@RequestBody @Valid ProductDTO product) {
 		return productService.addProduct(product);
 	}
 	

@@ -29,21 +29,34 @@ public class ShoppingCartService {
 
 	public ShoppingCartDTO addProductToCart(ShoppingCartDTO shoppingCartDTO, Long idProducut) {
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
-		shoppingCart.addProducts(productRepository.findById(idProducut)
+		shoppingCart.addProduct(productRepository.findById(idProducut)
 				.orElseThrow(() -> new BusinessException("Produto não encontrado!"))); 
 		return toShoppingCartDto(shoppingCart);
 	}
 	
+	public ShoppingCartDTO removeProductOfCart(ShoppingCartDTO shoppingCartDTO, Long idProducut) {
+		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
+		shoppingCart.removeProduct(idProducut); 
+		return toShoppingCartDto(shoppingCart);
+	}
+	
 	public ShoppingCartDTO applyCoupon(ShoppingCartDTO shoppingCartDTO, String codeCoupon) {
-		
+		if (shoppingCartDTO.getProductsCart().isEmpty()) {
+			throw new BusinessException("Não é possível aplicar o cupom com o carrinho vazio!");
+		}
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
 		var newCoupon = toCouponEntity(couponService.findByCode(codeCoupon));
+		addCouponToCart(newCoupon, shoppingCart);
+		definePercentageCouponToProducts(shoppingCart);
+		shoppingCart.defineTotals();
+		return toShoppingCartDto(shoppingCart);
+	}
+	
+	private void addCouponToCart(Coupon newCoupon, ShoppingCart shoppingCart) {
 		if (newCoupon.getExpiration().isBefore(LocalDateTime.now())) {
 			throw new BusinessException("Cupom de desconto expirado!");
 		}
-
 		Optional<Coupon> optCouponCart = Optional.ofNullable(shoppingCart.getCoupon());
-
 		if (optCouponCart.isPresent()) {
 			if (newCoupon.getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) > 0) {
 				shoppingCart.setCoupon(newCoupon);
@@ -51,11 +64,17 @@ public class ShoppingCartService {
 		} else {
 			shoppingCart.setCoupon(newCoupon);
 		}
+	}
+	
+	public ShoppingCartDTO removeCoupon(ShoppingCartDTO shoppingCartDTO) {
+		if (shoppingCartDTO.getCoupon() == null) {
+			throw new BusinessException("Não há nenhum cupom aplicado ao carrinho de compras!");
+		}
+		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
+		shoppingCart.setCoupon(null);
 		definePercentageCouponToProducts(shoppingCart);
 		shoppingCart.defineTotals();
-		
 		return toShoppingCartDto(shoppingCart);
-		
 	}
 	
 	private void definePercentageCouponToProducts(ShoppingCart shoppingCart) {

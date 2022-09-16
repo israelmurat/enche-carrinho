@@ -17,10 +17,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
+@Entity
 @NoArgsConstructor @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
 public class Coupon {
 
 	@Id

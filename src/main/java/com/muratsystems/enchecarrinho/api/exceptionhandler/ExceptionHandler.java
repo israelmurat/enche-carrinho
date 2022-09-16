@@ -8,7 +8,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
-import com.muratsystems.enchecarrinho.domain.exception.ValidationException;
+import com.muratsystems.enchecarrinho.domain.exception.CustomRuntimeException;
 
 @ControllerAdvice
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
@@ -19,9 +19,9 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 	
-	// Trata as exceptions lançadas em ValidationException
-	@org.springframework.web.bind.annotation.ExceptionHandler(ValidationException.class)
-	public ResponseEntity<Object> handleValidation(ValidationException ex, WebRequest request) {
+	// Trata as exceptions lançadas em CustomRuntimeException
+	@org.springframework.web.bind.annotation.ExceptionHandler(CustomRuntimeException.class)
+	public ResponseEntity<Object> handleCustomRuntime(CustomRuntimeException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 

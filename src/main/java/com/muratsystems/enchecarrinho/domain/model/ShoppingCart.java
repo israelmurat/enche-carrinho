@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.muratsystems.enchecarrinho.domain.exception.BusinessException;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,7 +25,7 @@ public class ShoppingCart {
 	private BigDecimal totalValue = BigDecimal.ZERO;
 	private BigDecimal totalValueWithDiscount = BigDecimal.ZERO;
 
-	public void addProducts(Product product) {
+	public void addProduct(Product product) {
 		boolean isAddProduct = false;
 		for (var productCart : productsCart) {
 			if (!isAddProduct && productCart.getProduct().equals(product)) {
@@ -35,40 +38,76 @@ public class ShoppingCart {
 			var newProductCart = new ProductCart(product, 1);
 			productsCart.add(newProductCart);
 		}
-		setDiscountByType();
-		setDiscountByTotal();
+		mapAndDefineDiscountByType();
+		defineDiscountsProgressiveAndCoupon();
 		defineTotals();
 	}
+	
+	public void removeProduct(Long idProducut) {
+		if (!isRemovedProduct(idProducut)) {
+			throw new BusinessException("Produto informado não está no carrinho!");
+		}
+		mapAndDefineDiscountByType();
+		defineDiscountsProgressiveAndCoupon();
+		defineTotals();
+	}
+	
+	private boolean isRemovedProduct(Long idProducut) {
+		for (Iterator<ProductCart> itProductCart = productsCart.iterator(); itProductCart.hasNext(); ) {
+			var productCart = itProductCart.next();
+			if (productCart.getProduct().getId().equals(idProducut)) {
+				if (productCart.getQuantity().compareTo(Integer.valueOf(1)) > 0) {
+					productCart.setQuantity(productCart.getQuantity() - 1);
+				} else {
+					itProductCart.remove();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 
-	private void setDiscountByType() {
-		Map<String, Integer> mapProduct = new HashMap<>();
+	private void mapAndDefineDiscountByType() {
+		Map<String, Integer> mapTypeProducts = mapTypeOfProducts();
+		for (var productCart : productsCart) {
+			defineDiscountByType(productCart, mapTypeProducts);
+		}
+	}
+	
+	private void defineDiscountByType(ProductCart productCart, Map<String, Integer> mapTypeProducts) {
+		productCart.setPercentualDiscountByType(BigDecimal.ZERO);
+		String key = productCart.getProduct().getType();
+		if (mapTypeProducts.containsKey(key)) {
+			if (mapTypeProducts.get(key).compareTo(Integer.valueOf(10)) >= 0) {
+				productCart.setPercentualDiscountByType(BigDecimal.TEN);
+				productCart.defineSubtotals();
+			}
+		}
+	}
+	
+	private Map<String, Integer> mapTypeOfProducts() {
+		Map<String, Integer> mapProducts = new HashMap<>();
 		for (var productCart : productsCart) {
 			String key = productCart.getProduct().getType();
-			if (mapProduct.containsKey(key)) {
-				mapProduct.put(key, mapProduct.get(key) + productCart.getQuantity());
+			if (mapProducts.containsKey(key)) {
+				mapProducts.put(key, mapProducts.get(key) + productCart.getQuantity());
 			} else {
-				mapProduct.put(key, productCart.getQuantity());
+				mapProducts.put(key, productCart.getQuantity());
 			}
 			productCart.defineSubtotals();
 		}
-		for (var productCart : productsCart) {
-			productCart.setPercentualDiscountByType(BigDecimal.ZERO);
-			String key = productCart.getProduct().getType();
-			if (mapProduct.containsKey(key)) {
-				if (mapProduct.get(key).compareTo(Integer.valueOf(10)) >= 0) {
-					productCart.setPercentualDiscountByType(BigDecimal.TEN);
-					productCart.defineSubtotals();
-				}
-			}
-		}
+		return mapProducts;
 	}
 
-	private void setDiscountByTotal() {
-		BigDecimal progressiveDiscount = BigDecimal.ZERO;
+	private void defineDiscountsProgressiveAndCoupon() {
 		BigDecimal discountByCoupon = coupon != null ? coupon.getDiscountPercentage() : BigDecimal.ZERO;
 		BigDecimal totalValueCart = productsCart.stream().map(p -> p.getSubTotalValue())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-
+		addDiscountsToProducts(defineProgressiveDiscount(totalValueCart), discountByCoupon);
+	}
+	
+	private BigDecimal defineProgressiveDiscount(BigDecimal totalValueCart) {
+		BigDecimal progressiveDiscount = BigDecimal.ZERO;
 		if (totalValueCart.compareTo(new BigDecimal("1000")) > 0 
 				&& totalValueCart.compareTo(new BigDecimal("5000")) <= 0) {
 			progressiveDiscount = new BigDecimal("5");
@@ -78,13 +117,15 @@ public class ShoppingCart {
 		} else if (totalValueCart.compareTo(new BigDecimal("10000")) > 0) {
 			progressiveDiscount = new BigDecimal("10");
 		}
-		
+		return progressiveDiscount;
+	}
+	
+	private void addDiscountsToProducts(BigDecimal progressiveDiscount, BigDecimal discountByCoupon) {
 		for (var productCart : productsCart) {
 			productCart.setPercentualProgressiveDiscount(progressiveDiscount);
 			productCart.setPercentualDiscountByCoupon(discountByCoupon);
 			productCart.defineSubtotals();
 		}
-		
 	}
 
 	public void defineTotals() {
