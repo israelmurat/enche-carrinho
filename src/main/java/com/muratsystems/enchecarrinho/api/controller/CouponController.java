@@ -6,8 +6,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +28,13 @@ public class CouponController {
 	private CouponService couponService;
 	
 	@GetMapping
-	public List<CouponDTO> getAllCoupons() {
-		return null;
+	public ResponseEntity<List<CouponDTO>> getAllCoupons() {
+		return new ResponseEntity<>(couponService.getAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{idCoupon}")
+	public ResponseEntity<CouponDTO> getById(@PathVariable Long idCoupon) {
+		return new ResponseEntity<>(couponService.findById(idCoupon), HttpStatus.OK);
 	}
 	
 	@PostMapping
@@ -36,14 +43,16 @@ public class CouponController {
 		return couponService.addCoupon(couponDTO);
 	}
 	
-	@PutMapping(value = "/{id}/update")
-	public void updateCoupon() {
-		
+	@PutMapping(value = "/{idCoupon}")
+	public ResponseEntity<CouponDTO> updateCoupon(@Valid @PathVariable Long idCoupon, 
+			@RequestBody CouponDTO CouponDTO) {
+		return new ResponseEntity<>(couponService.update(idCoupon, CouponDTO), HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value = "/{id}/delete")
-	public void deleteCoupon() {
-		
+	@DeleteMapping(value = "/{idCoupon}")
+	public ResponseEntity<Void> deleteCoupon(@PathVariable Long idCoupon) {
+		couponService.delete(idCoupon);
+		return ResponseEntity.noContent().build();
 	}
 	
 }
