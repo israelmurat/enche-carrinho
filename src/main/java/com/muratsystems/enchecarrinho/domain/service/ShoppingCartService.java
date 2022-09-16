@@ -41,9 +41,6 @@ public class ShoppingCartService {
 	}
 	
 	public ShoppingCartDTO applyCoupon(ShoppingCartDTO shoppingCartDTO, String codeCoupon) {
-		if (shoppingCartDTO.getProductsCart().isEmpty()) {
-			throw new BusinessException("Não é possível aplicar o cupom com o carrinho vazio!");
-		}
 		var shoppingCart = toShoppingCartEntity(shoppingCartDTO);
 		var newCoupon = toCouponEntity(couponService.findByCode(codeCoupon));
 		addCouponToCart(newCoupon, shoppingCart);
@@ -53,16 +50,23 @@ public class ShoppingCartService {
 	}
 	
 	private void addCouponToCart(Coupon newCoupon, ShoppingCart shoppingCart) {
-		if (newCoupon.getExpiration().isBefore(LocalDateTime.now())) {
-			throw new BusinessException("Cupom de desconto expirado!");
-		}
+		validateCoupon(newCoupon);
 		Optional<Coupon> optCouponCart = Optional.ofNullable(shoppingCart.getCoupon());
 		if (optCouponCart.isPresent()) {
-			if (newCoupon.getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) > 0) {
+			if (newCoupon.getDiscountPercentage().compareTo(optCouponCart.get().getDiscountPercentage()) >= 0) {
 				shoppingCart.setCoupon(newCoupon);
+			} else {
+				throw new BusinessException(
+						"Novo cupom tem percentual de desconto menor do que o já aplicado anteriormente!");
 			}
 		} else {
 			shoppingCart.setCoupon(newCoupon);
+		}
+	}
+	
+	private void validateCoupon(Coupon newCoupon) {
+		if (newCoupon.getExpiration().isBefore(LocalDateTime.now())) {
+			throw new BusinessException("Cupom de desconto expirado!");
 		}
 	}
 	

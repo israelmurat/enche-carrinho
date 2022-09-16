@@ -52,7 +52,6 @@ public class ShoppingCartController {
 
 	}
 	
-	
 	@PostMapping(value = "/apply-coupon/{codeCoupon}")
 	public ResponseEntity<ShoppingCartDTO> applyCoupon(@CookieValue("cart") Optional<String> jsonCart,
 			HttpServletResponse response, @PathVariable("codeCoupon") String codeCoupon)
